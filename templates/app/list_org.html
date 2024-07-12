@@ -1,0 +1,15 @@
+{% for org in orgs %}
+    <div class="card_add card">
+        <img src="{{org.photo.url}}"  class="image_add card-img-top" alt="...">
+        <div class="card-body" style="width: 100%">
+          <h5 class="card-title"><a style="text-decoration: none; color: black" href="{{org.get_absolute_url}}">{{org.name}} - {{org.adress.city}}</a></h5>
+          <p class="card-text">{{org.content|truncatechars:100}}</p>
+          <p class="card-text"><img src="/media/svg/phone.svg" style="width: 1rem">{{org.phone}}</p>
+          <p class="card-text"><img src="/media/svg/location.svg" style="width: 1rem">{{org.adress}}</p>
+          <p class="card-text"><img src="/media/svg/tags.svg" style="width: 1rem"> 
+            {% for i in org.tages.all %} 
+              <a style="text-decoration: none; color: black;" href="{{i.get_absolute_url}}">{{i}} | </a>
+            {% endfor %}</p>
+        </div>
+      </div>
+{% endfor %}

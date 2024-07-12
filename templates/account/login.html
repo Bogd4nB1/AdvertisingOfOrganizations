@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">Авторизация</h1>
+            <div class="form_addaptive col-xl-4 col-lg-6 col-md-8 col-sm-8 col-xs-6 mx-auto">
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <div style="display: flex; justify-content: center; align-items: center">
+                    <button type="submit" class="btn btn-info" id="reg">Войти</button>
+                 </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}{{org.name}}{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row" style="padding-top: 10px;">
+        <div class="image col-lg-6 col-md-7">
+            <img src="{{org.photo.url}}" class="img-fluid" alt="..." width="600" style="border-radius: 10px;">
+        </div>
+        <div class="col-lg-6 col-md-5">
+            <h1>{{org.name}}</h1>
+            <p><img src="/media/svg/phone.svg" style="width: 1rem; margin-right: 5px">{{org.phone}}</p>
+            <p><img src="/media/svg/location.svg" style="width: 1rem; margin-right: 5px">{{org.adress}}</p>
+            <p><img src="/media/svg/site.svg" style="width: 1rem; margin-right: 5px">{{org.web_site}}</p>
+            <p><img src="/media/svg/email.svg" style="width: 1rem; margin-right: 5px">{{org.email}}</p>
+            <p><img src="/media/svg/tags.svg" style="width: 1rem; margin-right: 5px"> {% for i in org.tages.all %} {{i}} | {% endfor %}</p>
+        </div> 
+    </div>
+    <div style="word-wrap: break-word; width: 90%; margin-top: 5px;">{{org.content}}</div>
+    
+ 
+    <!-- Main Body -->
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-12 pb-4 flex-column d-flex"> 
+                    {% for com in comments  %}
+                    <div class="d-flex flex-column">
+                        <div class="comment text-justify float-left" style="margin-top: 32px; word-wrap: break-word;">
+                            <h4>{{com.author}}</h4>
+                            <span>- {{ com.created_at }}</span>
+                            <br>
+                            <p>{{com.text}}</p>
+                            <div class="d-flex flex-row">
+                                <div class="answer">
+                                    <a href="#algin-form" class="link_color" onclick="addReview('{{com.author}}', '{{com.id}}')">Ответить<img class="svg" src="/media/svg/comment.svg" alt=""></a>
+                                </div>
+                                {% if org_id == org.id %}
+                                    <div class="delete">
+                                        <a href="#algin-form" class="link_color" style="margin-left: 10px" onclick="deleteComment(this.parentNode.parentNode.parentNode.parentNode, '{{com.id}}')">Удалить<img class="svg" src="/media/svg/del.svg" alt="" style="margin-left: 4px; width: 13px"></a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% for reply in com.children.all %}
+                        <div class="children comment mt-4 text-justify float-left" style="margin-top: 32px; word-wrap: break-word;">
+                            <h4>{{reply.author}}</h4>
+                            <span>- {{ reply.created_at }}</span>
+                            <br>
+                            <p>{{reply.text}}</p>
+                            <div class="d-flex flex-row">
+                                <div class="answer">
+                                    <a href="#algin-form" class="link_color" onclick="addReview('{{reply.author}}', '{{com.id}}')">Ответить<img class="svg" src="/media/svg/comment.svg" alt=""></a>
+                                </div>
+                                {% if org_id == org.id %}
+                                    <div class="delete">
+                                        <a href="#algin-form" class="link_color" style="margin-left: 10px" onclick="deleteComment(this.parentNode.parentNode.parentNode, '{{reply.id}}')">Удалить<img class="svg" src="/media/svg/del.svg" alt="" style="margin-left: 4px; width: 13px"></a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-lg-4 col-md-5 col-sm-12 offset-md-1 offset-sm-1 col-12 mt-4">
+                    <form id="algin-form" action="{% url 'comment' org.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent" id="contactparent" value="">
+                        <div class="form-group">
+                            <h4>Оставить отзыв</h4>
+                            <label for="message">Отзыв</label>
+                            <textarea name="text" id="msg" cols="30" rows="5" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Имя</label>
+                            <input type="text" name="author" id="fullname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="post" class="btn">Отправить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+    function addReview(name, id) {
+        document.getElementById('contactparent').value = id;
+        document.getElementById('msg').innerHTML = `${name}, `;
+    }
+
+    function deleteComment(element, id) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'delete_comment' %}",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                id_com: id,
+                org_id: {{org.id}}
+            },
+            success: function (data) {
+                console.log(data);
+                element.remove();
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        })
+    }
+</script>
+    
+{% endblock content %}

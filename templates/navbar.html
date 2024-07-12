@@ -1,0 +1,52 @@
+{% load static %}
+<head>
+  <link rel="stylesheet" href="{% static '/css/comment.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+</head>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid container">
+      <a class="navbar-brand" style="font-weight: 600" href="{% url 'index' %}">Orgi-byz</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if auth == False %}
+            <li class="nav-item">
+              <a href="{% url 'login' %}" class="nav-link"><img class="svg-exit" src="/media/svg/exit.svg" alt="">Войти</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'register' %}" class="nav-link"><img class="svg-exit" src="/media/svg/register.svg" alt="">Регистрация</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a href="{% url 'logout' %}" class="nav-link"><img class="svg-exit" src="/media/svg/exit.svg" alt="">Выйти</a>
+            </li>
+            {% if me_org %}
+            <li class="nav-item">
+              <a href="{% url 'edit_org' %}" class="nav-link"><img class="svg-nav" src="/media/svg/add-org.svg" alt="">Изменить организацию</a>
+            </li>
+              {% if org_id != None %}
+                <li class="nav-item">
+                  <a href="{% url 'detail' org_id %}" class="nav-link"><img class="svg-nav" src="/media/svg/add-org.svg" alt="">Моя организация</a>
+                </li>
+              {% endif %}
+            {% else %}
+            <li class="nav-item">
+              <a href="{% url 'add_org' %}" class="nav-link"><img class="svg-nav" src="/media/svg/add-org.svg" alt="">Добавить организацию</a>
+            </li>
+            {% endif %}
+          {% endif %}
+        </ul>
+        <input class="me-2 form-control" style="max-width: 12rem;" type="search" placeholder="Найти" aria-label="Search" 
+        id="search-room"
+        name="q"
+        hx-get="{% url 'search' %}"
+        hx-target="#search-results"
+        hx-trigger="keyup changed delay:150ms"
+        >
+      </div>
+    </div>
+  </nav>

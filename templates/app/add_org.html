@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">Добавить организацию</h1>
+
+            <form class="forma_add form-group" method="post" action="{% url 'add_org' %}" style="margin: auto; color: black;" enctype="multipart/form-data">
+                {% csrf_token %}
+                    {{ formOrg.as_p }}
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {{ formTag.as_p }}
+                    {{ formAdress.as_p }}
+                <div style="display: flex; justify-content: center; align-items: center">
+                    <button style="margin-bottom: 50px;" type="submit" class="btn btn-info" id="reg">Добавить организацию</button>
+                 </div>
+            </form>
+    </div>
+{% endblock content %}
